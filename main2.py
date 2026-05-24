@@ -4,6 +4,7 @@ import base64
 import pandas as pd
 import plotly.express as px
 import numpy as np
+import urllib.parse as _up
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -159,35 +160,43 @@ RECOG_DATA = [
      "link_reg",     None, None),
 ]
 
-# ── Inline SVG flag icons ──────────────────────────────────────────────────────
-_SVG_BR = (
-    '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" '
-    'xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">'
-    '<rect x="1" y="1" width="18" height="18" rx="3.5" stroke="currentColor" stroke-width="1.5"/>'
-    '<path d="M10 3.5L18 10L10 16.5L2 10Z" stroke="currentColor" stroke-width="1.5" fill="none"/>'
-    '<circle cx="10" cy="10" r="3.3" stroke="currentColor" stroke-width="1.5" fill="none"/>'
+def _svg_uri(svg: str) -> str:
+    return "url('data:image/svg+xml," + _up.quote(svg, safe='') + "')"
+
+_CSS_BR_URI = _svg_uri(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">'
+    '<rect x="1" y="1" width="18" height="18" rx="3.5" stroke="#777" stroke-width="1.5"/>'
+    '<path d="M10 3.5L18 10L10 16.5L2 10Z" stroke="#777" stroke-width="1.5" fill="none"/>'
+    '<circle cx="10" cy="10" r="3.3" stroke="#777" stroke-width="1.5" fill="none"/>'
     '</svg>'
 )
-_SVG_US = (
-    '<svg width="26" height="18" viewBox="0 0 28 20" fill="none" '
-    'xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">'
-    '<rect x="1" y="1" width="26" height="18" rx="3.5" stroke="currentColor" stroke-width="1.5"/>'
-    '<line x1="1.7" y1="4.2" x2="26.3" y2="4.2" stroke="currentColor" stroke-width="0.9" opacity="0.4"/>'
-    '<line x1="1.7" y1="7.2" x2="26.3" y2="7.2" stroke="currentColor" stroke-width="0.9" opacity="0.4"/>'
-    '<line x1="1.7" y1="10.2" x2="26.3" y2="10.2" stroke="currentColor" stroke-width="0.9" opacity="0.4"/>'
-    '<line x1="1.7" y1="13.2" x2="26.3" y2="13.2" stroke="currentColor" stroke-width="0.9" opacity="0.4"/>'
-    '<line x1="1.7" y1="16.2" x2="26.3" y2="16.2" stroke="currentColor" stroke-width="0.9" opacity="0.4"/>'
-    '<rect x="1" y="1" width="10.5" height="11.5" rx="3.5" fill="currentColor" fill-opacity="0.06"/>'
-    '<circle cx="3.2" cy="3.5" r="0.75" fill="currentColor"/>'
-    '<circle cx="5.7" cy="3.5" r="0.75" fill="currentColor"/>'
-    '<circle cx="8.2" cy="3.5" r="0.75" fill="currentColor"/>'
-    '<circle cx="3.2" cy="6.2" r="0.75" fill="currentColor"/>'
-    '<circle cx="5.7" cy="6.2" r="0.75" fill="currentColor"/>'
-    '<circle cx="8.2" cy="6.2" r="0.75" fill="currentColor"/>'
-    '<circle cx="3.2" cy="8.9" r="0.75" fill="currentColor"/>'
-    '<circle cx="5.7" cy="8.9" r="0.75" fill="currentColor"/>'
-    '<circle cx="8.2" cy="8.9" r="0.75" fill="currentColor"/>'
+_CSS_US_URI = _svg_uri(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 20" fill="none">'
+    '<rect x="1" y="1" width="26" height="18" rx="3.5" stroke="#777" stroke-width="1.5"/>'
+    '<line x1="1.7" y1="4.2" x2="26.3" y2="4.2" stroke="#777" stroke-width="0.9" stroke-opacity=".4"/>'
+    '<line x1="1.7" y1="7.2" x2="26.3" y2="7.2" stroke="#777" stroke-width="0.9" stroke-opacity=".4"/>'
+    '<line x1="1.7" y1="10.2" x2="26.3" y2="10.2" stroke="#777" stroke-width="0.9" stroke-opacity=".4"/>'
+    '<line x1="1.7" y1="13.2" x2="26.3" y2="13.2" stroke="#777" stroke-width="0.9" stroke-opacity=".4"/>'
+    '<line x1="1.7" y1="16.2" x2="26.3" y2="16.2" stroke="#777" stroke-width="0.9" stroke-opacity=".4"/>'
     '</svg>'
+)
+
+st.markdown(
+    f"<style>"
+    f"[data-testid='stRadio'] [data-baseweb='radio']:first-child p::before,"
+    f"[data-testid='stRadioGroup'] label:first-child p::before{{"
+    f"content:'';display:inline-block;width:16px;height:13px;"
+    f"background-image:{_CSS_BR_URI};background-size:contain;"
+    f"background-repeat:no-repeat;background-position:center;"
+    f"vertical-align:middle;margin-right:4px;margin-bottom:1px;}}"
+    f"[data-testid='stRadio'] [data-baseweb='radio']:nth-child(2) p::before,"
+    f"[data-testid='stRadioGroup'] label:nth-child(2) p::before{{"
+    f"content:'';display:inline-block;width:22px;height:13px;"
+    f"background-image:{_CSS_US_URI};background-size:contain;"
+    f"background-repeat:no-repeat;background-position:center;"
+    f"vertical-align:middle;margin-right:4px;margin-bottom:1px;}}"
+    f"</style>",
+    unsafe_allow_html=True,
 )
 
 # ── Bilingual texts ────────────────────────────────────────────────────────────
@@ -278,10 +287,10 @@ TEXTS = {
                             "cite as referências abaixo:"),
         "cite_sw_label":   "Software",
         "cite_diss_label": "Dissertação",
-        "cite_sw":   ("BAPTISTA, G. de S. <em>GSandy</em>: software para previsão do "
+        "cite_sw":   ("BAPTISTA, G. S. <em>GSandy</em>: software para previsão do "
                       "comportamento de areias em ensaios de cisalhamento. "
                       "Rio de Janeiro: PUC-Rio, 2024."),
-        "cite_diss": ("BAPTISTA, G. de S. Machine Learning para Previsão do Comportamento de "
+        "cite_diss": ("BAPTISTA, G. S. Machine Learning para Previsão do Comportamento de "
                       "Areias em Ensaios de Cisalhamento Direto e DSS. 2024. Dissertação de "
                       "Mestrado — Pontifícia Universidade Católica do Rio de Janeiro, "
                       "Rio de Janeiro, 2024."),
@@ -401,9 +410,9 @@ TEXTS = {
                             "please cite the references below:"),
         "cite_sw_label":   "Software",
         "cite_diss_label": "Dissertation",
-        "cite_sw":   ("BAPTISTA, G. de S. <em>GSandy</em>: software for predicting sand "
+        "cite_sw":   ("BAPTISTA, G. S. <em>GSandy</em>: software for predicting sand "
                       "behavior in shear tests. Rio de Janeiro: PUC-Rio, 2024."),
-        "cite_diss": ("BAPTISTA, G. de S. Machine Learning for Predicting Sand Behavior in "
+        "cite_diss": ("BAPTISTA, G. S. Machine Learning for Predicting Sand Behavior in "
                       "Direct Shear and DSS Tests. 2024. Master's Dissertation — Pontifical "
                       "Catholic University of Rio de Janeiro, Rio de Janeiro, 2024."),
         "disclaimer_title": "Legal Notice",
@@ -487,16 +496,6 @@ with col_title:
     st.markdown(f"<p class='gs-subtitle'>{t('subtitle')}</p>", unsafe_allow_html=True)
 
 with col_lang:
-    _br_op = "1" if st.session_state.lang == "PT" else "0.35"
-    _en_op = "1" if st.session_state.lang == "EN" else "0.35"
-    st.markdown(
-        f'<div style="display:flex;justify-content:space-around;'
-        f'align-items:center;margin-bottom:-24px;padding-top:6px;">'
-        f'<span style="opacity:{_br_op};">{_SVG_BR}</span>'
-        f'<span style="opacity:{_en_op};">{_SVG_US}</span>'
-        f'</div>',
-        unsafe_allow_html=True,
-    )
     lang_pick = st.radio(
         "lang", ["PT", "EN"],
         horizontal=True,
@@ -576,11 +575,18 @@ def _page_sim():
                             + names[1:2] * len(test_values)
                             + names[2:3] * len(test_values)),
             })
+            params_sub = (
+                f"G<sub>s</sub>={gs:.3f} · "
+                f"e<sub>0</sub>={e0:.3f} · "
+                f"CR={cr}% · "
+                f"σ<sub>v</sub>={sv} kPa"
+            )
             fig = px.line(
                 df, x=x_full, y="τ/σ", color=model_col,
-                title=t("chart_title"),
+                title=f"{t('chart_title')}<br><sup>{params_sub}</sup>",
                 color_discrete_sequence=["#1E4B9C", "#6BAED6", "#C44040"],
             )
+            st.session_state["_sim_params"] = {"gs": gs, "e0": e0, "cr": cr, "sv": sv}
             fig.update_traces(line=dict(width=2, dash="dash"))
             fig.update_layout(
                 plot_bgcolor="white", paper_bgcolor="white",
@@ -613,6 +619,12 @@ def _page_sim():
         with tab_chart:
             st.plotly_chart(st.session_state["_sim_fig"], use_container_width=True)
         with tab_data:
+            p = st.session_state.get("_sim_params", {})
+            if p:
+                st.caption(
+                    f"Gₛ={p['gs']:.3f} · e₀={p['e0']:.3f} · "
+                    f"CR={p['cr']}% · σᵥ={p['sv']} kPa"
+                )
             st.dataframe(st.session_state["_sim_df"], use_container_width=True)
 
 
