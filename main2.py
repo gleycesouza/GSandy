@@ -433,6 +433,15 @@ TEXTS = {
 if "lang" not in st.session_state:
     st.session_state.lang = "PT"
 
+# Sync language from ?lang= query param (set by HTML flag buttons)
+# Must run before any widget rendering — no rerun needed (link click is already a new render)
+try:
+    _qp_lang = st.query_params.get("lang", None)
+    if _qp_lang in ("PT", "EN"):
+        st.session_state.lang = _qp_lang
+except Exception:
+    pass
+
 # ── Helpers ────────────────────────────────────────────────────────────────────
 def get_b64(path):
     with open(path, "rb") as f:
@@ -492,14 +501,6 @@ with col_lang:
         f'</div>',
         unsafe_allow_html=True,
     )
-    # Sync language from URL query param (triggered by flag link clicks)
-    try:
-        _qp = st.query_params.get("lang", None)
-        if _qp in ("PT", "EN") and _qp != st.session_state.lang:
-            st.session_state.lang = _qp
-            safe_rerun()
-    except Exception:
-        pass
 
 st.divider()
 
@@ -512,7 +513,6 @@ try:
     _nav_pages = [t("nav_sim"), t("nav_model"), t("nav_about")]
     _sel = _st_navbar(
         _nav_pages,
-        selected=_nav_pages[_nav_idx],
         styles={
             "nav": {"background-color": "#1B2B3A"},
             "span": {"color": "#CCCCCC", "padding": "0 1rem"},
