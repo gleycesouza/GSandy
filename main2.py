@@ -58,6 +58,9 @@ st.markdown("""
     transition:background 0.15s !important;
   }
   .stButton > button:hover { background:#2D4A63 !important; }
+  .stButton > button p,
+  .stButton > button span,
+  .stButton > button * { color: #FFFFFF !important; }
 
   /* Expanders */
   [data-testid="stExpander"] {
@@ -378,14 +381,17 @@ def safe_rerun():
     except AttributeError:
         st.experimental_rerun()
 
-def recog_item(tag, title, url1, link1, url2=None, link2=None):
+def recog_item(tag, title, url1, link1, url2=None, link2=None, note=None):
     links = f'<a class="gs-recog-link" href="{url1}" target="_blank">{link1} ↗</a>'
     if url2 and link2:
         links += f'&nbsp;&middot;&nbsp;<a class="gs-recog-link" href="{url2}" target="_blank">{link2} ↗</a>'
+    note_html = (
+        f'<div style="font-size:0.71rem;color:#AAA;margin-top:5px;line-height:1.5;">{note}</div>'
+    ) if note else ''
     return (
         f'<div class="gs-recog-item">'
         f'<span class="gs-recog-tag">{tag}</span>'
-        f'<div><div class="gs-recog-title">{title}</div>{links}</div>'
+        f'<div><div class="gs-recog-title">{title}</div>{links}{note_html}</div>'
         f'</div>'
     )
 
@@ -410,7 +416,6 @@ with col_title:
     st.markdown(f"<p class='gs-subtitle'>{t('subtitle')}</p>", unsafe_allow_html=True)
 
 with col_lang:
-    # Clean text toggle — flags don't render reliably across all OS/browsers
     lang_pick = st.radio(
         "lang", ["PT", "EN"],
         horizontal=True,
@@ -423,15 +428,55 @@ with col_lang:
 
 st.divider()
 
-# ── Main navigation tabs ───────────────────────────────────────────────────────
-tab_sim, tab_model, tab_pub = st.tabs([
-    t("nav_sim"), t("nav_model"), t("nav_about")
-])
+# ── Navigation ─────────────────────────────────────────────────────────────────
+_nav_idx  = st.session_state.get("_nav_idx", 0)
+_use_tabs = True
+
+try:
+    from streamlit_navigation_bar import st_navbar as _st_navbar
+    _nav_pages = [t("nav_sim"), t("nav_model"), t("nav_about")]
+    _sel = _st_navbar(
+        _nav_pages,
+        selected=_nav_pages[_nav_idx],
+        styles={
+            "nav": {
+                "background-color": "#1B2B3A",
+                "justify-content": "left",
+            },
+            "span": {
+                "color": "#CCCCCC",
+                "padding": "0.45rem 1rem",
+                "font-size": "0.87rem",
+                "font-weight": "500",
+                "font-family": "'Segoe UI', system-ui, Arial, sans-serif",
+            },
+            "active": {
+                "color": "#FFFFFF",
+                "font-weight": "600",
+                "background-color": "rgba(255,255,255,0.12)",
+                "border-radius": "4px",
+            },
+            "hover": {
+                "color": "#FFFFFF",
+                "background-color": "rgba(255,255,255,0.07)",
+                "border-radius": "4px",
+            },
+        },
+        adjust=False,
+    )
+    if _sel in _nav_pages:
+        _nav_idx = _nav_pages.index(_sel)
+        st.session_state["_nav_idx"] = _nav_idx
+    _use_tabs = False
+except Exception:
+    tab_sim, tab_model, tab_pub = st.tabs([t("nav_sim"), t("nav_model"), t("nav_about")])
+
 
 # ══════════════════════════════════════════════════════════════════════════════
-# TAB 1 — SIMULAÇÃO
+# PAGE CONTENT FUNCTIONS
 # ══════════════════════════════════════════════════════════════════════════════
-with tab_sim:
+
+def _page_sim():
     with st.expander(t("about_title"), expanded=False):
         st.markdown(t("about_body"))
 
@@ -457,6 +502,9 @@ with tab_sim:
         min_e0, max_e0 = 0.428, 0.726
         min_sv, max_sv = 13, 1600
         init = [2.656, 0.552, 64, 150]
+
+    # Persist test type for Modelo tab (always, not just on simulation)
+    st.session_state["_last_test_type"] = test_type
 
     col1, col2 = st.columns(2)
     with col1:
@@ -503,7 +551,6 @@ with tab_sim:
                 yaxis=dict(showgrid=True, gridcolor="#F2F2F2", zeroline=False),
                 margin=dict(t=60, b=40, l=40, r=20),
             )
-            # Persist results in session state so they survive reruns
             st.session_state["_sim_df"]  = df
             st.session_state["_sim_fig"] = fig
             st.session_state["_sim_ok"]  = True
@@ -519,10 +566,8 @@ with tab_sim:
         with tab_data:
             st.dataframe(st.session_state["_sim_df"], use_container_width=True)
 
-# ══════════════════════════════════════════════════════════════════════════════
-# TAB 2 — MODELO
-# ══════════════════════════════════════════════════════════════════════════════
-with tab_model:
+
+def _page_model():
     _tt = st.session_state.get("_last_test_type", "DSS")
     if _tt == "DSS":
         result_path = "results_train/results_dss.xlsx"
@@ -615,14 +660,8 @@ sand in simple shear and triaxial tests. *Canadian Geotechnical Journal*, v. 33,
 Direto e DSS. TCC — UFPR, Curitiba, 2018.
 """)
 
-# Persist last selected test type for tab_model
-if "test_type" in dir():
-    st.session_state["_last_test_type"] = test_type
 
-# ══════════════════════════════════════════════════════════════════════════════
-# TAB 3 — PUBLICAÇÕES & SOBRE
-# ══════════════════════════════════════════════════════════════════════════════
-with tab_pub:
+def _page_pub():
     # ── Recognition ──────────────────────────────────────────────────────────
     section_label(t("recog_title"))
     st.caption(t("recog_intro"))
@@ -632,13 +671,10 @@ with tab_pub:
         title = recog_titles.get(tk, "")
         l1    = t(lk1)
         l2    = t(lk2) if lk2 else None
-        items_html += recog_item(t(tk), title, url1, l1, url2, l2)
+        note  = t("reg_note") if tk == "tag_reg" else None
+        items_html += recog_item(t(tk), title, url1, l1, url2, l2, note=note)
     items_html += "<div style='height:2px'></div>"
     st.markdown(items_html, unsafe_allow_html=True)
-    st.markdown(
-        f'<p class="gs-note">{t("reg_note")}</p>',
-        unsafe_allow_html=True,
-    )
 
     st.divider()
 
@@ -665,6 +701,16 @@ with tab_pub:
             st.markdown("---")
             st.markdown(t("disclaimer_en_label"))
             st.markdown(t("disclaimer_en"))
+
+
+# ── Dispatch ────────────────────────────────────────────────────────────────────
+if _use_tabs:
+    with tab_sim:   _page_sim()
+    with tab_model: _page_model()
+    with tab_pub:   _page_pub()
+else:
+    [_page_sim, _page_model, _page_pub][_nav_idx]()
+
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
 LATTES_GLEYCE   = "#"   # substituir pelo link do Lattes
