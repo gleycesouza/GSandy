@@ -182,22 +182,23 @@ _CSS_US_URI = _svg_uri(
 )
 
 st.markdown(
+    '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">',
+    unsafe_allow_html=True,
+)
+st.markdown(
     f"<style>"
-    f"[data-testid='stRadio'] [data-baseweb='radio']:first-child p::before,"
-    f"[data-testid='stRadioGroup'] label:first-child p::before{{"
+    f"[data-testid='column'] [data-testid='stRadio'] [data-baseweb='radio']:first-child p::before,"
+    f"[data-testid='column'] [data-testid='stRadioGroup'] label:first-child p::before{{"
     f"content:'';display:inline-block;width:16px;height:13px;"
     f"background-image:{_CSS_BR_URI};background-size:contain;"
     f"background-repeat:no-repeat;background-position:center;"
     f"vertical-align:middle;margin-right:4px;margin-bottom:1px;}}"
-    f"[data-testid='stRadio'] [data-baseweb='radio']:nth-child(2) p::before,"
-    f"[data-testid='stRadioGroup'] label:nth-child(2) p::before{{"
+    f"[data-testid='column'] [data-testid='stRadio'] [data-baseweb='radio']:nth-child(2) p::before,"
+    f"[data-testid='column'] [data-testid='stRadioGroup'] label:nth-child(2) p::before{{"
     f"content:'';display:inline-block;width:22px;height:13px;"
     f"background-image:{_CSS_US_URI};background-size:contain;"
     f"background-repeat:no-repeat;background-position:center;"
     f"vertical-align:middle;margin-right:4px;margin-bottom:1px;}}"
-    f"[data-testid='stTabsContent'] [data-testid='stRadio'] [data-baseweb='radio'] p::before,"
-    f"[data-testid='stTabsContent'] [data-testid='stRadioGroup'] label p::before{{"
-    f"content:none!important;display:none!important;}}"
     f"</style>",
     unsafe_allow_html=True,
 )
