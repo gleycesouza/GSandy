@@ -19,53 +19,60 @@ st.markdown("""
   [data-testid="stAppViewContainer"] { background-color: #FFFFFF; }
   [data-testid="stHeader"]           { background-color: transparent; }
   section[data-testid="stSidebar"]   { display: none; }
-
   html, body, [class*="css"] {
     font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   }
-
-  h1 { font-size: 1.75rem !important; font-weight: 700; color: #111; letter-spacing: 0.01em; }
-  h3 { font-size: 1.0rem  !important; font-weight: 600; color: #222; margin-bottom: 0.15rem; }
-
-  hr { border-color: #EFEFEF !important; }
-
-  .stCaption p { color: #666 !important; font-size: 0.85rem !important; }
-
-  /* Button */
+  h1 { font-size: 1.72rem !important; font-weight: 700; color: #0F0F0F; letter-spacing: 0.01em; }
+  h3 { font-size: 1.0rem  !important; font-weight: 600; color: #1A1A1A; }
+  hr { border-color: #F0F0F0 !important; }
+  .stCaption p { color: #666 !important; font-size: 0.84rem !important; }
   .stButton > button {
-    background-color: #1C1C1C !important;
+    background-color: #1B2B3A !important;
     color: #FFFFFF !important;
     border: none !important;
-    border-radius: 4px !important;
+    border-radius: 5px !important;
     padding: 0.55rem 1.5rem !important;
     font-size: 0.9rem !important;
     font-weight: 500 !important;
     width: 100% !important;
-    letter-spacing: 0.02em !important;
+    letter-spacing: 0.03em !important;
     transition: background-color 0.15s ease !important;
   }
-  .stButton > button:hover { background-color: #383838 !important; }
-
-  /* Expanders */
+  .stButton > button:hover { background-color: #2D4A63 !important; }
   [data-testid="stExpander"] {
     border: 1px solid #EBEBEB !important;
     border-radius: 6px !important;
     background: #FDFDFD !important;
   }
-
-  /* Tabs */
   [data-testid="stTabs"] [data-baseweb="tab"] { font-size: 0.86rem; }
-
-  /* Radio (language toggle) */
-  div[data-testid="stHorizontalBlock"] label { font-size: 0.85rem; }
-
-  /* Responsive */
+  .gsandy-section-label {
+    font-size: 0.67rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: #AAAAAA;
+    margin: 1.4rem 0 0.3rem 0;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid #F4F4F4;
+  }
   @media (max-width: 640px) {
     h1 { font-size: 1.3rem !important; }
-    .stButton > button { font-size: 0.85rem !important; padding: 0.5rem 1rem !important; }
+    .stButton > button { font-size: 0.84rem !important; }
   }
 </style>
 """, unsafe_allow_html=True)
+
+# ── Constants ──────────────────────────────────────────────────────────────────
+DISSERTATION_DOI = "https://doi.org/10.17771/PUCRio.acad.68591"
+
+RECOG_URLS = [
+    "https://soilsandrocks.com/sr-2026-012125",
+    "https://www.maxwell.vrac.puc-rio.br/colecao.php?strSecao=resultado&nrSeq=68591&idi=1&rc=1",
+    "https://crea-rj.org.br/wp-content/uploads/2025/12/E-BOOK-TCT-2025.pdf",
+    "https://2024.cobramseg.com.br/evento/cobramseg2024/trabalhosaprovados/naintegra/741",
+    "https://drive.google.com/file/d/1vq4Hce54fZIJ4fo1IfJ1pWnK0xmn0QR_/view",
+    "#",
+]
 
 # ── Bilingual content ──────────────────────────────────────────────────────────
 TEXTS = {
@@ -80,7 +87,8 @@ TEXTS = {
             "com dados de areia e validados em contexto acadêmico.\n\n"
             "Para detalhes sobre a metodologia, consulte a dissertação "
             "*\"Machine Learning para Previsão do Comportamento de Areias em Ensaios de Cisalhamento "
-            "Direto e DSS\"* (Baptista, 2024)."
+            "Direto e DSS\"* "
+            f"[(Baptista, 2024)]({DISSERTATION_DOI})."
         ),
         "sim_title": "Configuração da Simulação",
         "test_label": "Tipo de ensaio",
@@ -94,6 +102,7 @@ TEXTS = {
         "success": "Simulação concluída.",
         "tab_chart": "Gráfico",
         "tab_data": "Dados",
+        "model_section_label": "Desempenho e Transparência do Modelo",
         "tab_metrics": "Métricas",
         "tab_val": "Validação",
         "tab_src": "Fontes",
@@ -103,17 +112,17 @@ TEXTS = {
         "metrics_cap": "Métricas de desempenho — Treinamento e Teste",
         "metrics_expand": "O que significam essas métricas?",
         "metrics_help": (
-            "**R²** (coeficiente de determinação): mede o quanto o modelo explica a variabilidade dos dados. "
-            "Varia de 0 a 1; quanto mais próximo de 1, melhor o ajuste.\n\n"
-            "**RMSE** (raiz do erro quadrático médio): está na mesma unidade da variável alvo e penaliza "
-            "erros grandes — valores menores indicam melhor desempenho.\n\n"
+            "**R²** (coeficiente de determinação): mede o quanto o modelo explica a variabilidade dos "
+            "dados. Varia de 0 a 1; quanto mais próximo de 1, melhor o ajuste.\n\n"
+            "**RMSE** (raiz do erro quadrático médio): está na mesma unidade da variável alvo e "
+            "penaliza erros grandes — valores menores indicam melhor desempenho.\n\n"
             "**MAE** (erro absoluto médio): média dos desvios absolutos entre previsão e valor real; "
             "representa o erro típico na escala original da variável."
         ),
         "val_cap": "Resultados dos modelos nos ensaios de validação",
         "val_help": (
-            "Comparação entre os valores previstos e os valores experimentais nos ensaios de validação "
-            "(dados não utilizados no treinamento)."
+            "Comparação entre os valores previstos pelos modelos e os valores experimentais "
+            "nos ensaios de validação — dados não utilizados no treinamento."
         ),
         "src_cap": "Base de dados utilizada no treinamento dos modelos",
         "refs_exp": "Referências Bibliográficas",
@@ -122,18 +131,39 @@ TEXTS = {
             "O GSandy e a dissertação associada foram reconhecidos nas seguintes "
             "publicações e eventos científicos:"
         ),
-        "tag_award": "PRÊMIO",
-        "tag_conf": "CONGRESSO",
-        "tag_article": "ARTIGO",
-        "tag_thesis": "DISSERTAÇÃO",
-        "tag_pdf": "PDF",
-        "tag_reg": "REGISTRO",
+        "tag_article":  "ARTIGO",
+        "tag_thesis":   "DISSERTAÇÃO",
+        "tag_award":    "PRÊMIO",
+        "tag_conf":     "CONGRESSO",
+        "tag_pdf":      "PDF",
+        "tag_reg":      "REGISTRO",
+        "recog_tag_keys": ["tag_article", "tag_thesis", "tag_award", "tag_conf", "tag_pdf", "tag_reg"],
+        "recog_titles": [
+            "Artigo publicado — Soils and Rocks",
+            "Dissertação — Acervo Maxwell PUC-Rio",
+            "XIII Prêmio CREA-RJ de Trabalhos Científicos e Tecnológicos 2025",
+            "COBRAMSEG 2024 — Trabalho aprovado e apresentado",
+            "Trabalho completo (Google Drive)",
+            "Registro de programa de computador",
+        ],
+        "recog_links": [
+            "Acessar artigo",
+            "Acessar acervo",
+            "Ver publicação (pág. 48)",
+            "Acessar trabalho",
+            "Acessar PDF",
+            "Acessar registro",
+        ],
+        "reg_note": (
+            "Para acessar o certificado de registro: clique no link acima, selecione "
+            "<b>Continuar...</b> (sem necessidade de login) e pesquise pelo nome <b>GSandy</b>."
+        ),
         "cite_title": "Como Citar este Trabalho",
         "cite_intro": (
             "Caso utilize o GSandy ou a dissertação associada em seu trabalho, "
             "por favor cite as referências abaixo:"
         ),
-        "cite_sw_label": "Software",
+        "cite_sw_label":   "Software",
         "cite_diss_label": "Dissertação",
         "cite_sw": (
             "BAPTISTA, G. S. <em>GSandy</em>: software para previsão do comportamento de areias "
@@ -164,9 +194,13 @@ TEXTS = {
             "the use of results in engineering projects or technical decision-making. "
             "Any practical application is entirely at the user's own risk.*"
         ),
-        "contact_label": "Contato",
-        "lattes_gleyce": "Lattes",
-        "lattes_marina": "Lattes",
+        "contact_label":       "Contato",
+        "contact_gleyce":      "Gleyce Souza Baptista, MSc.",
+        "contact_gleyce_role": "Engenharia Civil — Geotecnia, PUC-Rio",
+        "contact_marina":      "Marina Bellaver Corte, Dra.",
+        "contact_marina_role": "Professora, UFRGS",
+        "lattes_gleyce":   "Lattes",
+        "lattes_marina":   "Lattes",
         "linkedin_gleyce": "LinkedIn",
         "linkedin_marina": "LinkedIn",
     },
@@ -182,7 +216,7 @@ TEXTS = {
             "exclusively on sand data and validated in an academic context.\n\n"
             "For details on the methodology, refer to the dissertation "
             "*\"Machine Learning for Predicting Sand Behavior in Direct Shear and DSS Tests\"* "
-            "(Baptista, 2024)."
+            f"[(Baptista, 2024)]({DISSERTATION_DOI})."
         ),
         "sim_title": "Simulation Setup",
         "test_label": "Test type",
@@ -196,6 +230,7 @@ TEXTS = {
         "success": "Simulation completed.",
         "tab_chart": "Chart",
         "tab_data": "Data",
+        "model_section_label": "Model Performance & Transparency",
         "tab_metrics": "Metrics",
         "tab_val": "Validation",
         "tab_src": "Sources",
@@ -224,18 +259,39 @@ TEXTS = {
             "GSandy and its associated dissertation have been recognized in the following "
             "publications and scientific events:"
         ),
-        "tag_award": "AWARD",
-        "tag_conf": "CONFERENCE",
-        "tag_article": "ARTICLE",
-        "tag_thesis": "DISSERTATION",
-        "tag_pdf": "PDF",
-        "tag_reg": "REGISTRATION",
+        "tag_article":  "ARTICLE",
+        "tag_thesis":   "DISSERTATION",
+        "tag_award":    "AWARD",
+        "tag_conf":     "CONFERENCE",
+        "tag_pdf":      "PDF",
+        "tag_reg":      "REGISTRATION",
+        "recog_tag_keys": ["tag_article", "tag_thesis", "tag_award", "tag_conf", "tag_pdf", "tag_reg"],
+        "recog_titles": [
+            "Published article — Soils and Rocks",
+            "Dissertation — Maxwell Repository, PUC-Rio",
+            "XIII CREA-RJ Award for Scientific and Technological Works 2025",
+            "COBRAMSEG 2024 — Approved and presented paper",
+            "Full work (Google Drive)",
+            "Software registration record",
+        ],
+        "recog_links": [
+            "Access article",
+            "Access repository",
+            "View publication (p. 48)",
+            "Access paper",
+            "Access PDF",
+            "Access registration",
+        ],
+        "reg_note": (
+            "To access the registration certificate: click the link above, select "
+            "<b>Continue...</b> (no login required), and search for <b>GSandy</b>."
+        ),
         "cite_title": "How to Cite",
         "cite_intro": (
             "If you use GSandy or the associated dissertation in your work, "
             "please cite the references below:"
         ),
-        "cite_sw_label": "Software",
+        "cite_sw_label":   "Software",
         "cite_diss_label": "Dissertation",
         "cite_sw": (
             "BAPTISTA, G. S. <em>GSandy</em>: software for predicting sand behavior in shear tests. "
@@ -260,9 +316,13 @@ TEXTS = {
         ),
         "disclaimer_en_label": "",
         "disclaimer_en": "",
-        "contact_label": "Contact",
-        "lattes_gleyce": "Lattes",
-        "lattes_marina": "Lattes",
+        "contact_label":       "Contact",
+        "contact_gleyce":      "Gleyce Souza Baptista, MSc.",
+        "contact_gleyce_role": "Civil Engineering — Geotechnics, PUC-Rio",
+        "contact_marina":      "Marina Bellaver Corte, Dr.",
+        "contact_marina_role": "Professor, UFRGS",
+        "lattes_gleyce":   "Lattes",
+        "lattes_marina":   "Lattes",
         "linkedin_gleyce": "LinkedIn",
         "linkedin_marina": "LinkedIn",
     },
@@ -283,25 +343,31 @@ def t(key):
 
 def recog_item(tag, title, url, link_text):
     return (
-        f'<div style="display:flex;align-items:flex-start;gap:0.75rem;'
-        f'padding:0.8rem 0;border-bottom:1px solid #F4F4F4;">'
-        f'<span style="background:#F2F2F2;color:#555;font-size:0.63rem;font-weight:700;'
-        f'padding:0.2rem 0.45rem;border-radius:3px;white-space:nowrap;'
+        '<div style="display:flex;align-items:flex-start;gap:0.75rem;'
+        'padding:0.75rem 0;border-bottom:1px solid #F5F5F5;">'
+        f'<span style="background:#F2F2F2;color:#555;font-size:0.62rem;font-weight:700;'
+        f'padding:0.18rem 0.45rem;border-radius:3px;white-space:nowrap;'
         f'text-transform:uppercase;letter-spacing:0.07em;margin-top:3px;flex-shrink:0;">'
         f'{tag}</span>'
         f'<div><div style="font-size:0.88rem;color:#111;font-weight:500;line-height:1.5;">'
         f'{title}</div>'
         f'<a href="{url}" target="_blank" '
-        f'style="font-size:0.8rem;color:#777;text-decoration:none;">'
+        f'style="font-size:0.79rem;color:#777;text-decoration:none;">'
         f'{link_text} ↗</a></div></div>'
     )
 
 def cite_box(text):
     return (
-        f'<div style="background:#F8F8F8;border-radius:4px;padding:0.75rem 1rem;'
-        f'font-family:\'Courier New\',monospace;font-size:0.79rem;color:#333;'
-        f'margin:0.25rem 0 0.9rem 0;border-left:3px solid #DCDCDC;">'
+        '<div style="background:#F8F8F8;border-radius:4px;padding:0.75rem 1rem;'
+        "font-family:'Courier New',monospace;font-size:0.79rem;color:#333;"
+        'margin:0.25rem 0 0.9rem 0;border-left:3px solid #DCDCDC;">'
         f'{text}</div>'
+    )
+
+def section_label(text):
+    st.markdown(
+        f'<p class="gsandy-section-label">{text}</p>',
+        unsafe_allow_html=True,
     )
 
 # ── Header ─────────────────────────────────────────────────────────────────────
@@ -320,12 +386,13 @@ with col_title:
 
 with col_lang:
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-    lang_pick = st.radio(
-        "lang", ["PT", "EN"],
+    lang_pick_raw = st.radio(
+        "lang", ["\U0001f1e7\U0001f1f7 PT", "\U0001f1fa\U0001f1f8 EN"],
         horizontal=True,
         label_visibility="collapsed",
         index=0 if st.session_state.lang == "PT" else 1,
     )
+    lang_pick = "PT" if "PT" in lang_pick_raw else "EN"
     if lang_pick != st.session_state.lang:
         st.session_state.lang = lang_pick
         st.rerun()
@@ -414,36 +481,45 @@ if st.button(t("btn"), key="simular"):
         margin=dict(t=60, b=40, l=40, r=20),
     )
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        t("tab_chart"), t("tab_data"), t("tab_metrics"), t("tab_val"), t("tab_src")
-    ])
-
-    with tab1:
+    tab_chart, tab_data = st.tabs([t("tab_chart"), t("tab_data")])
+    with tab_chart:
         st.plotly_chart(fig, use_container_width=True)
-
-    with tab2:
+    with tab_data:
         st.dataframe(df, use_container_width=True)
 
-    with tab3:
-        st.caption(t("metrics_cap"))
-        with st.expander(t("metrics_expand")):
-            st.markdown(t("metrics_help"))
+# ── Model performance & transparency (always visible) ─────────────────────────
+section_label(t("model_section_label"))
+
+tab_metrics, tab_val, tab_src = st.tabs([t("tab_metrics"), t("tab_val"), t("tab_src")])
+
+with tab_metrics:
+    st.caption(t("metrics_cap"))
+    with st.expander(t("metrics_expand")):
+        st.markdown(t("metrics_help"))
+    try:
         df_metrics = pd.read_excel(result_path)
         fmt = {c: "{:.3f}" for c in df_metrics.columns[1:]}
         st.dataframe(df_metrics.style.format(fmt), use_container_width=True)
+    except Exception as e:
+        st.error(str(e))
 
-    with tab4:
-        st.caption(t("val_cap"))
-        st.caption(t("val_help"))
-        # use_column_width for compatibility with older Streamlit versions
+with tab_val:
+    st.caption(t("val_cap"))
+    st.caption(t("val_help"))
+    try:
         st.image(image_path, use_column_width=True)
+    except Exception as e:
+        st.error(str(e))
 
-    with tab5:
-        st.caption(t("src_cap"))
+with tab_src:
+    st.caption(t("src_cap"))
+    try:
         df_autores = pd.read_excel("fontes_autores.xlsx")
         st.dataframe(df_autores, use_container_width=True)
-        with st.expander(t("refs_exp")):
-            st.markdown("""
+    except Exception as e:
+        st.error(str(e))
+    with st.expander(t("refs_exp")):
+        st.markdown("""
 **ADAMS, R. K.** Near-Surface Response of Beach Sand: An Experimental Investigation.
 Corvallis: Oregon State University, 2017.
 
@@ -499,44 +575,17 @@ st.divider()
 # ── Recognition & Publications ─────────────────────────────────────────────────
 with st.expander(t("recog_title"), expanded=False):
     st.caption(t("recog_intro"))
+    tag_keys = t("recog_tag_keys")
+    titles   = t("recog_titles")
+    links    = t("recog_links")
+    items_html = "".join(
+        recog_item(t(tk), title, url, link)
+        for tk, title, url, link in zip(tag_keys, titles, RECOG_URLS, links)
+    ) + "<div style='height:2px'></div>"
+    st.markdown(items_html, unsafe_allow_html=True)
     st.markdown(
-        recog_item(
-            t("tag_award"),
-            "XIII Prêmio CREA-RJ de Trabalhos Científicos e Tecnológicos 2025",
-            "https://crea-rj.org.br/wp-content/uploads/2025/12/E-BOOK-TCT-2025.pdf",
-            "Ver publicação (pág. 48)",
-        ) +
-        recog_item(
-            t("tag_conf"),
-            "COBRAMSEG 2024 — Trabalho aprovado e apresentado",
-            "https://2024.cobramseg.com.br/evento/cobramseg2024/trabalhosaprovados/naintegra/741",
-            "Acessar trabalho",
-        ) +
-        recog_item(
-            t("tag_article"),
-            "Artigo publicado — Soils and Rocks",
-            "https://soilsandrocks.com/sr-2026-012125",
-            "Acessar artigo",
-        ) +
-        recog_item(
-            t("tag_thesis"),
-            "Dissertação — Acervo Maxwell PUC-Rio",
-            "https://www.maxwell.vrac.puc-rio.br/colecao.php?strSecao=resultado&nrSeq=68591&idi=1&rc=1",
-            "Acessar acervo",
-        ) +
-        recog_item(
-            t("tag_pdf"),
-            "Trabalho completo (Google Drive)",
-            "https://drive.google.com/file/d/1vq4Hce54fZIJ4fo1IfJ1pWnK0xmn0QR_/view",
-            "Acessar PDF",
-        ) +
-        recog_item(
-            t("tag_reg"),
-            "Registro de programa de computador",
-            "#",  # substituir pelo link do registro quando disponível
-            "Acessar registro",
-        ) +
-        "<div style='height:2px'></div>",
+        f'<p style="font-size:0.77rem;color:#999;margin:0.6rem 0 0 0;">'
+        f'{t("reg_note")}</p>',
         unsafe_allow_html=True,
     )
 
@@ -563,26 +612,26 @@ LINKEDIN_GLEYCE = "#"   # substituir pelo link do LinkedIn
 LINKEDIN_MARINA = "#"
 
 st.markdown(f"""
-<div style="text-align:center;padding:1.5rem 0 1rem;color:#888;font-size:0.8rem;
-            border-top:1px solid #F0F0F0;margin-top:2rem;line-height:1.8;">
+<div style="text-align:center;padding:1.6rem 0 1rem;color:#888;font-size:0.8rem;
+            border-top:1px solid #F0F0F0;margin-top:2rem;line-height:2.0;">
   <strong style="color:#333;">{t("contact_label")}</strong><br><br>
-  <strong style="color:#444;">Gleyce Souza Baptista</strong>
-  &nbsp;&middot;&nbsp;
+  <strong style="color:#444;">{t("contact_gleyce")}</strong>
+  <span style="color:#BBB;font-size:0.74rem;"> &mdash; {t("contact_gleyce_role")}</span><br>
   <a href="mailto:gleycesouzaa@gmail.com" style="color:#666;text-decoration:none;">gleycesouzaa@gmail.com</a>
   &nbsp;&middot;&nbsp;
   <a href="{LATTES_GLEYCE}" target="_blank" style="color:#666;text-decoration:none;">{t("lattes_gleyce")}</a>
   &nbsp;&middot;&nbsp;
   <a href="{LINKEDIN_GLEYCE}" target="_blank" style="color:#666;text-decoration:none;">{t("linkedin_gleyce")}</a>
   <br>
-  <strong style="color:#444;">Marina Bellaver Corte</strong>
-  &nbsp;&middot;&nbsp;
+  <strong style="color:#444;">{t("contact_marina")}</strong>
+  <span style="color:#BBB;font-size:0.74rem;"> &mdash; {t("contact_marina_role")}</span><br>
   <a href="mailto:marinabellaver@gmail.com" style="color:#666;text-decoration:none;">marinabellaver@gmail.com</a>
   &nbsp;&middot;&nbsp;
   <a href="{LATTES_MARINA}" target="_blank" style="color:#666;text-decoration:none;">{t("lattes_marina")}</a>
   &nbsp;&middot;&nbsp;
   <a href="{LINKEDIN_MARINA}" target="_blank" style="color:#666;text-decoration:none;">{t("linkedin_marina")}</a>
   <br><br>
-  <span style="color:#BBB;font-size:0.75rem;">
+  <span style="color:#CCC;font-size:0.74rem;">
     Pontifícia Universidade Católica do Rio de Janeiro
     &nbsp;&middot;&nbsp;
     Universidade Federal do Rio Grande do Sul
