@@ -21,8 +21,8 @@ st.markdown("""
   [data-testid="stHeader"]           { background: transparent; }
   section[data-testid="stSidebar"]   { display: none; }
 
-  /* Global font */
-  html, body, [class*="css"], p, span, div, label, input {
+  /* Global font — span/div excluded so Material Icons font isn't overridden */
+  html, body, [class*="css"], p, label, input {
     font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif !important;
   }
 
@@ -182,19 +182,13 @@ _CSS_US_URI = _svg_uri(
 )
 
 st.markdown(
-    '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">',
-    unsafe_allow_html=True,
-)
-st.markdown(
     f"<style>"
-    f"[data-testid='column'] [data-testid='stRadio'] [data-baseweb='radio']:first-child p::before,"
-    f"[data-testid='column'] [data-testid='stRadioGroup'] label:first-child p::before{{"
+    f"div:has(>#lang-anchor) [data-baseweb='radio']:first-child p::before{{"
     f"content:'';display:inline-block;width:16px;height:13px;"
     f"background-image:{_CSS_BR_URI};background-size:contain;"
     f"background-repeat:no-repeat;background-position:center;"
     f"vertical-align:middle;margin-right:4px;margin-bottom:1px;}}"
-    f"[data-testid='column'] [data-testid='stRadio'] [data-baseweb='radio']:nth-child(2) p::before,"
-    f"[data-testid='column'] [data-testid='stRadioGroup'] label:nth-child(2) p::before{{"
+    f"div:has(>#lang-anchor) [data-baseweb='radio']:nth-child(2) p::before{{"
     f"content:'';display:inline-block;width:22px;height:13px;"
     f"background-image:{_CSS_US_URI};background-size:contain;"
     f"background-repeat:no-repeat;background-position:center;"
@@ -500,6 +494,7 @@ with col_title:
     st.markdown(f"<p class='gs-subtitle'>{t('subtitle')}</p>", unsafe_allow_html=True)
 
 with col_lang:
+    st.markdown('<div id="lang-anchor"></div>', unsafe_allow_html=True)
     lang_pick = st.radio(
         "lang", ["PT", "EN"],
         horizontal=True,
@@ -664,7 +659,7 @@ def _page_model():
     st.caption(t("val_cap"))
     st.caption(t("val_help"))
     try:
-        st.image(image_path, use_container_width=True)
+        st.image(image_path, width="stretch")
     except Exception as e:
         st.error(str(e))
 
