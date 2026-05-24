@@ -141,7 +141,7 @@ TEXTS = {
         "subtitle":      "Simulador de ensaios de cisalhamento em areias",
         "nav_sim":       "Simulação",
         "nav_model":     "Modelo",
-        "nav_about":     "Publicações & Sobre",
+        "nav_about":     "Publicações",
         "about_title":   "Sobre o GSandy",
         "about_body": (
             "O **GSandy** é uma ferramenta acadêmica desenvolvida como parte de dissertação "
@@ -255,7 +255,7 @@ TEXTS = {
         "subtitle":      "Sand shear test behavior simulator",
         "nav_sim":       "Simulation",
         "nav_model":     "Model",
-        "nav_about":     "Publications & About",
+        "nav_about":     "Publications",
         "about_title":   "About GSandy",
         "about_body": (
             "**GSandy** is an academic tool developed as part of a master's dissertation in "
@@ -416,12 +416,14 @@ with col_title:
     st.markdown(f"<p class='gs-subtitle'>{t('subtitle')}</p>", unsafe_allow_html=True)
 
 with col_lang:
-    lang_pick = st.radio(
-        "lang", ["PT", "EN"],
+    _lang_opts = ["🇧🇷 PT", "🇺🇸 EN"]
+    _lang_pick = st.radio(
+        "lang", _lang_opts,
         horizontal=True,
         label_visibility="collapsed",
         index=0 if st.session_state.lang == "PT" else 1,
     )
+    lang_pick = "PT" if _lang_opts.index(_lang_pick) == 0 else "EN"
     if lang_pick != st.session_state.lang:
         st.session_state.lang = lang_pick
         safe_rerun()
@@ -439,36 +441,20 @@ try:
         _nav_pages,
         selected=_nav_pages[_nav_idx],
         styles={
-            "nav": {
-                "background-color": "#1B2B3A",
-                "justify-content": "left",
-            },
-            "span": {
-                "color": "#CCCCCC",
-                "padding": "0.45rem 1rem",
-                "font-size": "0.87rem",
-                "font-weight": "500",
-                "font-family": "'Segoe UI', system-ui, Arial, sans-serif",
-            },
-            "active": {
-                "color": "#FFFFFF",
-                "font-weight": "600",
-                "background-color": "rgba(255,255,255,0.12)",
-                "border-radius": "4px",
-            },
-            "hover": {
-                "color": "#FFFFFF",
-                "background-color": "rgba(255,255,255,0.07)",
-                "border-radius": "4px",
-            },
+            "nav": {"background-color": "#1B2B3A"},
+            "span": {"color": "#CCCCCC", "padding": "0 1rem"},
+            "active": {"color": "#FFFFFF", "font-weight": "600"},
+            "hover": {"color": "#FFFFFF"},
         },
-        adjust=False,
     )
     if _sel in _nav_pages:
         _nav_idx = _nav_pages.index(_sel)
         st.session_state["_nav_idx"] = _nav_idx
     _use_tabs = False
-except Exception:
+except ImportError:
+    pass  # package not installed — use tabs below
+
+if _use_tabs:
     tab_sim, tab_model, tab_pub = st.tabs([t("nav_sim"), t("nav_model"), t("nav_about")])
 
 
@@ -688,12 +674,6 @@ def _page_pub():
 
     st.divider()
 
-    # ── About ─────────────────────────────────────────────────────────────────
-    section_label(t("about_title"))
-    st.markdown(t("about_body"))
-
-    st.divider()
-
     # ── Disclaimer ────────────────────────────────────────────────────────────
     with st.expander(t("disclaimer_title"), expanded=False):
         st.markdown(t("disclaimer_body"))
@@ -705,9 +685,9 @@ def _page_pub():
 
 # ── Dispatch ────────────────────────────────────────────────────────────────────
 if _use_tabs:
-    with tab_sim:   _page_sim()
-    with tab_model: _page_model()
-    with tab_pub:   _page_pub()
+    with tab_sim:    _page_sim()
+    with tab_model:  _page_model()
+    with tab_pub:    _page_pub()
 else:
     [_page_sim, _page_model, _page_pub][_nav_idx]()
 
