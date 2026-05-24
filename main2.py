@@ -134,9 +134,13 @@ st.markdown("""
 # ── Constants ──────────────────────────────────────────────────────────────────
 DISSERTATION_DOI  = "https://doi.org/10.17771/PUCRio.acad.68591"
 DISS_MAXWELL_URL  = "https://www.maxwell.vrac.puc-rio.br/colecao.php?strSecao=resultado&nrSeq=68591&idi=1&rc=1"
-DISS_DEFENSE_DATE = "2024"          # confirmar data exata se desejado
+DISS_DEFENSE_DATE = "Rio de Janeiro, 16 de abril de 2024"
 DISS_ADVISOR      = "Marina Bellaver Corte, DSc."
-DISS_COMMITTEE    = []              # adicionar membros: ["Nome, Dr. — Instituição", ...]
+DISS_COMMITTEE    = [
+    "Profª. Marina Bellaver Corte — Orientadora e Presidente, PUC-Rio",
+    "Profª. Raquel Quadros Velloso — PUC-Rio",
+    "Prof. Gustavo Vaz de Mello Guimarães — UFRJ",
+]
 
 LATTES_GLEYCE   = "http://lattes.cnpq.br/9284309506959502"
 LATTES_MARINA   = "http://lattes.cnpq.br/3293171632352740"
@@ -433,15 +437,6 @@ TEXTS = {
 if "lang" not in st.session_state:
     st.session_state.lang = "PT"
 
-# Sync language from ?lang= query param (set by HTML flag buttons)
-# Must run before any widget rendering — no rerun needed (link click is already a new render)
-try:
-    _qp_lang = st.query_params.get("lang", None)
-    if _qp_lang in ("PT", "EN"):
-        st.session_state.lang = _qp_lang
-except Exception:
-    pass
-
 # ── Helpers ────────────────────────────────────────────────────────────────────
 def get_b64(path):
     with open(path, "rb") as f:
@@ -492,45 +487,30 @@ with col_title:
     st.markdown(f"<p class='gs-subtitle'>{t('subtitle')}</p>", unsafe_allow_html=True)
 
 with col_lang:
-    _br_cls = "gs-lang-btn active" if st.session_state.lang == "PT" else "gs-lang-btn"
-    _en_cls = "gs-lang-btn active" if st.session_state.lang == "EN" else "gs-lang-btn"
+    _br_op = "1" if st.session_state.lang == "PT" else "0.35"
+    _en_op = "1" if st.session_state.lang == "EN" else "0.35"
     st.markdown(
-        f'<div class="gs-lang-toggle" style="margin-top:12px;">'
-        f'<a class="{_br_cls}" href="?lang=PT">{_SVG_BR}&nbsp;PT</a>'
-        f'<a class="{_en_cls}" href="?lang=EN">{_SVG_US}&nbsp;EN</a>'
+        f'<div style="display:flex;gap:8px;justify-content:flex-end;'
+        f'margin-bottom:-18px;margin-top:8px;">'
+        f'<span style="opacity:{_br_op};">{_SVG_BR}</span>'
+        f'<span style="opacity:{_en_op};">{_SVG_US}</span>'
         f'</div>',
         unsafe_allow_html=True,
     )
+    lang_pick = st.radio(
+        "lang", ["PT", "EN"],
+        horizontal=True,
+        label_visibility="collapsed",
+        index=0 if st.session_state.lang == "PT" else 1,
+    )
+    if lang_pick != st.session_state.lang:
+        st.session_state.lang = lang_pick
+        safe_rerun()
 
 st.divider()
 
 # ── Navigation ─────────────────────────────────────────────────────────────────
-_nav_idx  = st.session_state.get("_nav_idx", 0)
-_use_tabs = True
-
-try:
-    from streamlit_navigation_bar import st_navbar as _st_navbar
-    _nav_pages = [t("nav_sim"), t("nav_model"), t("nav_about")]
-    _sel = _st_navbar(
-        _nav_pages,
-        styles={
-            "nav": {"background-color": "#1B2B3A"},
-            "span": {"color": "#CCCCCC", "padding": "0 1rem"},
-            "active": {"color": "#FFFFFF", "font-weight": "600"},
-            "hover": {"color": "#FFFFFF"},
-        },
-    )
-    if _sel in _nav_pages:
-        _nav_idx = _nav_pages.index(_sel)
-        st.session_state["_nav_idx"] = _nav_idx
-    _use_tabs = False
-except ImportError:
-    pass
-except Exception as _nb_err:
-    st.warning(f"Navbar: {type(_nb_err).__name__}: {_nb_err}", icon="⚠")
-
-if _use_tabs:
-    tab_sim, tab_model, tab_pub = st.tabs([t("nav_sim"), t("nav_model"), t("nav_about")])
+tab_sim, tab_model, tab_pub = st.tabs([t("nav_sim"), t("nav_model"), t("nav_about")])
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -786,12 +766,6 @@ def _page_pub():
 
     st.divider()
 
-    # ── About ─────────────────────────────────────────────────────────────────
-    section_label(t("about_title"))
-    st.markdown(t("about_body"))
-
-    st.divider()
-
     # ── Disclaimer ────────────────────────────────────────────────────────────
     with st.expander(t("disclaimer_title"), expanded=False):
         st.markdown(t("disclaimer_body"))
@@ -802,12 +776,9 @@ def _page_pub():
 
 
 # ── Dispatch ────────────────────────────────────────────────────────────────────
-if _use_tabs:
-    with tab_sim:    _page_sim()
-    with tab_model:  _page_model()
-    with tab_pub:    _page_pub()
-else:
-    [_page_sim, _page_model, _page_pub][_nav_idx]()
+with tab_sim:   _page_sim()
+with tab_model: _page_model()
+with tab_pub:   _page_pub()
 
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
