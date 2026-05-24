@@ -619,7 +619,7 @@ def _page_sim():
     if st.session_state.get("_sim_ok"):
         tab_chart, tab_data = st.tabs([t("tab_chart"), t("tab_data")])
         with tab_chart:
-            st.plotly_chart(st.session_state["_sim_fig"], width="stretch")
+            st.plotly_chart(st.session_state["_sim_fig"])
         with tab_data:
             p = st.session_state.get("_sim_params", {})
             if p:
