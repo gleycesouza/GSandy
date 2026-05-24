@@ -619,7 +619,7 @@ def _page_sim():
     if st.session_state.get("_sim_ok"):
         tab_chart, tab_data = st.tabs([t("tab_chart"), t("tab_data")])
         with tab_chart:
-            st.plotly_chart(st.session_state["_sim_fig"], use_container_width=True)
+            st.plotly_chart(st.session_state["_sim_fig"], width="stretch")
         with tab_data:
             p = st.session_state.get("_sim_params", {})
             if p:
@@ -628,7 +628,7 @@ def _page_sim():
                     f"Gₛ={p['gs']:.3f} · e₀={p['e0']:.3f} · "
                     f"CR={p['cr']}% · σᵥ={p['sv']} kPa"
                 )
-            st.dataframe(st.session_state["_sim_df"], use_container_width=True)
+            st.dataframe(st.session_state["_sim_df"], width="stretch")
 
 
 def _page_model():
@@ -648,7 +648,7 @@ def _page_model():
     try:
         df_m = pd.read_excel(result_path)
         fmt  = {c: "{:.3f}" for c in df_m.columns[1:]}
-        st.dataframe(df_m.style.format(fmt), use_container_width=True)
+        st.dataframe(df_m.style.format(fmt), width="stretch")
     except Exception as e:
         st.error(str(e))
 
@@ -670,7 +670,7 @@ def _page_model():
     st.caption(t("src_cap"))
     try:
         df_aut = pd.read_excel("fontes_autores.xlsx")
-        st.dataframe(df_aut, use_container_width=True)
+        st.dataframe(df_aut, width="stretch")
     except Exception as e:
         st.error(str(e))
     with st.expander(t("refs_exp")):
