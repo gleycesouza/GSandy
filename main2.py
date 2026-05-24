@@ -490,8 +490,8 @@ with col_lang:
     _br_op = "1" if st.session_state.lang == "PT" else "0.35"
     _en_op = "1" if st.session_state.lang == "EN" else "0.35"
     st.markdown(
-        f'<div style="display:flex;gap:8px;justify-content:flex-end;'
-        f'margin-bottom:-18px;margin-top:8px;">'
+        f'<div style="display:flex;justify-content:space-around;'
+        f'align-items:center;margin-bottom:-24px;padding-top:6px;">'
         f'<span style="opacity:{_br_op};">{_SVG_BR}</span>'
         f'<span style="opacity:{_en_op};">{_SVG_US}</span>'
         f'</div>',
@@ -609,7 +609,6 @@ def _page_sim():
             st.session_state["_sim_ok"] = False
 
     if st.session_state.get("_sim_ok"):
-        st.success(t("success"))
         tab_chart, tab_data = st.tabs([t("tab_chart"), t("tab_data")])
         with tab_chart:
             st.plotly_chart(st.session_state["_sim_fig"], use_container_width=True)
