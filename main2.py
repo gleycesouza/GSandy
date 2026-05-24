@@ -195,6 +195,9 @@ st.markdown(
     f"background-image:{_CSS_US_URI};background-size:contain;"
     f"background-repeat:no-repeat;background-position:center;"
     f"vertical-align:middle;margin-right:4px;margin-bottom:1px;}}"
+    f"[data-testid='stTabsContent'] [data-testid='stRadio'] [data-baseweb='radio'] p::before,"
+    f"[data-testid='stTabsContent'] [data-testid='stRadioGroup'] label p::before{{"
+    f"content:none!important;display:none!important;}}"
     f"</style>",
     unsafe_allow_html=True,
 )
@@ -220,7 +223,7 @@ TEXTS = {
         ),
         "sim_title":     "Configuração da Simulação",
         "test_label":    "Tipo de ensaio",
-        "test_opts":     ["DSS", "Cisalhamento Direto"],
+        "test_opts":     ["Cisalhamento Direto Simples (DSS)", "Cisalhamento Direto"],
         "gs_label":      "$G_s$ — Densidade real dos grãos",
         "e0_label":      "$e_0$ — Índice de vazios inicial",
         "cr_label":      "$CR$ — Compacidade Relativa (%)",
@@ -343,7 +346,7 @@ TEXTS = {
         ),
         "sim_title":     "Simulation Setup",
         "test_label":    "Test type",
-        "test_opts":     ["DSS", "Direct Shear"],
+        "test_opts":     ["Direct Simple Shear (DSS)", "Direct Shear"],
         "gs_label":      "$G_s$ — Specific gravity of solids",
         "e0_label":      "$e_0$ — Initial void ratio",
         "cr_label":      "$CR$ — Relative density (%)",
@@ -583,10 +586,13 @@ def _page_sim():
             )
             fig = px.line(
                 df, x=x_full, y="τ/σ", color=model_col,
-                title=f"{t('chart_title')}<br><sup>{params_sub}</sup>",
+                title=f"{t('chart_title')} — {test_display}<br><sup>{params_sub}</sup>",
                 color_discrete_sequence=["#1E4B9C", "#6BAED6", "#C44040"],
             )
-            st.session_state["_sim_params"] = {"gs": gs, "e0": e0, "cr": cr, "sv": sv}
+            st.session_state["_sim_params"] = {
+                "gs": gs, "e0": e0, "cr": cr, "sv": sv,
+                "test_display": test_display,
+            }
             fig.update_traces(line=dict(width=2, dash="dash"))
             fig.update_layout(
                 plot_bgcolor="white", paper_bgcolor="white",
@@ -622,6 +628,7 @@ def _page_sim():
             p = st.session_state.get("_sim_params", {})
             if p:
                 st.caption(
+                    f"{p.get('test_display', '')} · "
                     f"Gₛ={p['gs']:.3f} · e₀={p['e0']:.3f} · "
                     f"CR={p['cr']}% · σᵥ={p['sv']} kPa"
                 )
@@ -656,7 +663,7 @@ def _page_model():
     st.caption(t("val_cap"))
     st.caption(t("val_help"))
     try:
-        st.image(image_path, use_column_width=True)
+        st.image(image_path, use_container_width=True)
     except Exception as e:
         st.error(str(e))
 
