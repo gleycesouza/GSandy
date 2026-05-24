@@ -523,11 +523,7 @@ with tab_sim:
 # TAB 2 — MODELO
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_model:
-    # result_path and image_path depend on test_type, which is defined inside tab_sim.
-    # We re-derive them here based on what the user last selected (or default DSS).
     _tt = st.session_state.get("_last_test_type", "DSS")
-    result_path = f"results_train/results_{_tt.lower().replace(' ', '_').replace('cisalhamento_direto','ds').replace('dss','dss')}.xlsx"
-    # Simplified path derivation
     if _tt == "DSS":
         result_path = "results_train/results_dss.xlsx"
         image_path  = "results_train/validation_dss.png"
@@ -535,36 +531,41 @@ with tab_model:
         result_path = "results_train/results_ds.xlsx"
         image_path  = "results_train/validation_ds.png"
 
-    tab_met, tab_val, tab_src = st.tabs([t("tab_metrics"), t("tab_val"), t("tab_src")])
+    # ── Métricas ──────────────────────────────────────────────────────────────
+    section_label(t("tab_metrics"))
+    st.caption(t("metrics_cap"))
+    with st.expander(t("metrics_exp")):
+        st.markdown(t("metrics_help"))
+    try:
+        df_m = pd.read_excel(result_path)
+        fmt  = {c: "{:.3f}" for c in df_m.columns[1:]}
+        st.dataframe(df_m.style.format(fmt), use_container_width=True)
+    except Exception as e:
+        st.error(str(e))
 
-    with tab_met:
-        st.caption(t("metrics_cap"))
-        with st.expander(t("metrics_exp")):
-            st.markdown(t("metrics_help"))
-        try:
-            df_m = pd.read_excel(result_path)
-            fmt  = {c: "{:.3f}" for c in df_m.columns[1:]}
-            st.dataframe(df_m.style.format(fmt), use_container_width=True)
-        except Exception as e:
-            st.error(str(e))
+    st.divider()
 
-    with tab_val:
-        st.caption(t("val_cap"))
-        st.caption(t("val_help"))
-        try:
-            st.image(image_path, use_column_width=True)
-        except Exception as e:
-            st.error(str(e))
+    # ── Validação ─────────────────────────────────────────────────────────────
+    section_label(t("tab_val"))
+    st.caption(t("val_cap"))
+    st.caption(t("val_help"))
+    try:
+        st.image(image_path, use_column_width=True)
+    except Exception as e:
+        st.error(str(e))
 
-    with tab_src:
-        st.caption(t("src_cap"))
-        try:
-            df_aut = pd.read_excel("fontes_autores.xlsx")
-            st.dataframe(df_aut, use_container_width=True)
-        except Exception as e:
-            st.error(str(e))
-        with st.expander(t("refs_exp")):
-            st.markdown("""
+    st.divider()
+
+    # ── Fontes ────────────────────────────────────────────────────────────────
+    section_label(t("tab_src"))
+    st.caption(t("src_cap"))
+    try:
+        df_aut = pd.read_excel("fontes_autores.xlsx")
+        st.dataframe(df_aut, use_container_width=True)
+    except Exception as e:
+        st.error(str(e))
+    with st.expander(t("refs_exp")):
+        st.markdown("""
 **ADAMS, R. K.** Near-Surface Response of Beach Sand: An Experimental Investigation.
 Corvallis: Oregon State University, 2017.
 
