@@ -77,14 +77,18 @@ st.markdown("""
   .stRadio    label    { font-size:0.86rem !important; }
 
   /* Language toggle */
-  .gs-lang-toggle { display:flex; gap:4px; margin-top:10px; justify-content:flex-end; }
+  .gs-lang-toggle {
+    display:flex; gap:6px; justify-content:flex-end; align-items:center;
+  }
   .gs-lang-btn {
-    font-size:0.75rem; font-weight:700; padding:3px 9px;
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:0.73rem; font-weight:700; padding:4px 9px;
     border-radius:4px; border:1px solid #DDD; cursor:pointer;
     background:#F7F7F7; color:#666; text-decoration:none;
-    letter-spacing:0.04em;
+    letter-spacing:0.05em; line-height:1;
   }
   .gs-lang-btn.active { background:#1B2B3A; color:#FFF; border-color:#1B2B3A; }
+  .gs-lang-btn svg { flex-shrink:0; }
 
   /* Recognition items */
   .gs-recog-item {
@@ -100,6 +104,15 @@ st.markdown("""
   .gs-recog-title { font-size:0.88rem; color:#111; font-weight:500; line-height:1.5; }
   .gs-recog-link  { font-size:0.79rem; color:#777; text-decoration:none; }
   .gs-recog-link:hover { color:#1B2B3A; }
+
+  /* Dissertation card */
+  .gs-diss-card {
+    background:#FAFAFA; border-radius:6px; padding:1rem 1.1rem;
+    border:1px solid #EBEBEB; margin-bottom:0.4rem;
+  }
+  .gs-diss-title { font-size:0.9rem; font-weight:600; color:#111; line-height:1.6; }
+  .gs-diss-meta  { font-size:0.81rem; color:#666; margin-top:0.35rem; line-height:1.6; }
+  .gs-diss-links { margin-top:0.6rem; display:flex; gap:1rem; flex-wrap:wrap; }
 
   /* Cite box */
   .gs-cite {
@@ -119,21 +132,59 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Constants ──────────────────────────────────────────────────────────────────
-DISSERTATION_DOI = "https://doi.org/10.17771/PUCRio.acad.68591"
+DISSERTATION_DOI  = "https://doi.org/10.17771/PUCRio.acad.68591"
+DISS_MAXWELL_URL  = "https://www.maxwell.vrac.puc-rio.br/colecao.php?strSecao=resultado&nrSeq=68591&idi=1&rc=1"
+DISS_DEFENSE_DATE = "2024"          # confirmar data exata se desejado
+DISS_ADVISOR      = "Marina Bellaver Corte, DSc."
+DISS_COMMITTEE    = []              # adicionar membros: ["Nome, Dr. — Instituição", ...]
+
+LATTES_GLEYCE   = "http://lattes.cnpq.br/9284309506959502"
+LATTES_MARINA   = "http://lattes.cnpq.br/3293171632352740"
+LINKEDIN_GLEYCE = "https://www.linkedin.com/in/gleyce-souza/"
+LINKEDIN_MARINA = "https://www.linkedin.com/in/marinabellavercorte/"
 
 # (tag_key, url_primary, link_key_primary, url_secondary_or_None, link_key_secondary_or_None)
 RECOG_DATA = [
     ("tag_article", "https://soilsandrocks.com/sr-2026-012125",
      "link_article", None, None),
-    ("tag_thesis",  "https://www.maxwell.vrac.puc-rio.br/colecao.php?strSecao=resultado&nrSeq=68591&idi=1&rc=1",
-     "link_thesis",  None, None),
     ("tag_award",   "https://crea-rj.org.br/wp-content/uploads/2025/12/E-BOOK-TCT-2025.pdf",
      "link_award",   "https://drive.google.com/file/d/1vq4Hce54fZIJ4fo1IfJ1pWnK0xmn0QR_/view", "link_award2"),
     ("tag_conf",    "https://2024.cobramseg.com.br/evento/cobramseg2024/trabalhosaprovados/naintegra/741",
      "link_conf",    None, None),
-    ("tag_reg",     "#",
+    ("tag_reg",     "https://busca.inpi.gov.br/pePI/",
      "link_reg",     None, None),
 ]
+
+# ── Inline SVG flag icons ──────────────────────────────────────────────────────
+_SVG_BR = (
+    '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" '
+    'xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">'
+    '<rect x="1" y="1" width="18" height="18" rx="3.5" stroke="currentColor" stroke-width="1.5"/>'
+    '<path d="M10 3.5L18 10L10 16.5L2 10Z" stroke="currentColor" stroke-width="1.5" fill="none"/>'
+    '<circle cx="10" cy="10" r="3.3" stroke="currentColor" stroke-width="1.5" fill="none"/>'
+    '</svg>'
+)
+_SVG_US = (
+    '<svg width="26" height="18" viewBox="0 0 28 20" fill="none" '
+    'xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">'
+    '<rect x="1" y="1" width="26" height="18" rx="3.5" stroke="currentColor" stroke-width="1.5"/>'
+    '<line x1="1.7" y1="4.2" x2="26.3" y2="4.2" stroke="currentColor" stroke-width="0.9" opacity="0.4"/>'
+    '<line x1="1.7" y1="7.2" x2="26.3" y2="7.2" stroke="currentColor" stroke-width="0.9" opacity="0.4"/>'
+    '<line x1="1.7" y1="10.2" x2="26.3" y2="10.2" stroke="currentColor" stroke-width="0.9" opacity="0.4"/>'
+    '<line x1="1.7" y1="13.2" x2="26.3" y2="13.2" stroke="currentColor" stroke-width="0.9" opacity="0.4"/>'
+    '<line x1="1.7" y1="16.2" x2="26.3" y2="16.2" stroke="currentColor" stroke-width="0.9" opacity="0.4"/>'
+    '<rect x="1" y="1" width="10.5" height="11.5" rx="3.5" fill="currentColor" fill-opacity="0.06"/>'
+    '<circle cx="3.2" cy="3.5" r="0.75" fill="currentColor"/>'
+    '<circle cx="5.7" cy="3.5" r="0.75" fill="currentColor"/>'
+    '<circle cx="8.2" cy="3.5" r="0.75" fill="currentColor"/>'
+    '<circle cx="3.2" cy="6.2" r="0.75" fill="currentColor"/>'
+    '<circle cx="5.7" cy="6.2" r="0.75" fill="currentColor"/>'
+    '<circle cx="8.2" cy="6.2" r="0.75" fill="currentColor"/>'
+    '<circle cx="3.2" cy="8.9" r="0.75" fill="currentColor"/>'
+    '<circle cx="5.7" cy="8.9" r="0.75" fill="currentColor"/>'
+    '<circle cx="8.2" cy="8.9" r="0.75" fill="currentColor"/>'
+    '</svg>'
+)
 
 # ── Bilingual texts ────────────────────────────────────────────────────────────
 TEXTS = {
@@ -188,23 +239,30 @@ TEXTS = {
                      "(dados não utilizados no treinamento)."),
         "src_cap":  "Base de dados utilizada no treinamento dos modelos",
         "refs_exp": "Referências Bibliográficas",
+        "diss_section_title":  "Dissertação de Mestrado",
+        "diss_full_title": (
+            "Machine Learning para Previsão do Comportamento de Areias em "
+            "Ensaios de Cisalhamento Direto e DSS"
+        ),
+        "diss_institution": "Pontifícia Universidade Católica do Rio de Janeiro",
+        "diss_advisor_label":   "Orientadora",
+        "diss_defense_label":   "Defesa",
+        "diss_committee_label": "Banca Avaliadora",
+        "diss_access": "Acervo Maxwell",
         "recog_title": "Reconhecimentos e Publicações",
         "recog_intro": ("O GSandy e a dissertação associada foram reconhecidos nas seguintes "
                         "publicações e eventos científicos:"),
         "tag_article": "ARTIGO",
-        "tag_thesis":  "DISSERTAÇÃO",
         "tag_award":   "PRÊMIO",
         "tag_conf":    "CONGRESSO",
         "tag_reg":     "REGISTRO",
         "recog_titles": {
             "tag_article": "Artigo publicado — Soils and Rocks",
-            "tag_thesis":  "Dissertação — Acervo Maxwell PUC-Rio",
             "tag_award":   "XIII Prêmio CREA-RJ de Trabalhos Científicos e Tecnológicos 2025",
             "tag_conf":    "COBRAMSEG 2024 — Trabalho aprovado e apresentado",
             "tag_reg":     "Registro de programa de computador",
         },
         "link_article": "Acessar artigo",
-        "link_thesis":  "Acessar acervo",
         "link_award":   "Resumo (pág. 48)",
         "link_award2":  "PDF completo",
         "link_conf":    "Acessar trabalho",
@@ -216,11 +274,13 @@ TEXTS = {
                             "cite as referências abaixo:"),
         "cite_sw_label":   "Software",
         "cite_diss_label": "Dissertação",
-        "cite_sw":   ("BAPTISTA, G. S. <em>GSandy</em>: software para previsão do comportamento "
-                      "de areias em ensaios de cisalhamento. Rio de Janeiro: PUC-Rio, 2024."),
-        "cite_diss": ("BAPTISTA, G. S. Machine Learning para Previsão do Comportamento de Areias "
-                      "em Ensaios de Cisalhamento Direto e DSS. 2024. Dissertação de Mestrado — "
-                      "Pontifícia Universidade Católica do Rio de Janeiro, Rio de Janeiro, 2024."),
+        "cite_sw":   ("BAPTISTA, G. de S. <em>GSandy</em>: software para previsão do "
+                      "comportamento de areias em ensaios de cisalhamento. "
+                      "Rio de Janeiro: PUC-Rio, 2024."),
+        "cite_diss": ("BAPTISTA, G. de S. Machine Learning para Previsão do Comportamento de "
+                      "Areias em Ensaios de Cisalhamento Direto e DSS. 2024. Dissertação de "
+                      "Mestrado — Pontifícia Universidade Católica do Rio de Janeiro, "
+                      "Rio de Janeiro, 2024."),
         "disclaimer_title": "Aviso Legal",
         "disclaimer_body": (
             "O GSandy é disponibilizado **exclusivamente para fins acadêmicos e de pesquisa**. "
@@ -242,8 +302,8 @@ TEXTS = {
             "entirely at the user's own risk.*"
         ),
         "contact_label":       "Contato",
-        "contact_gleyce":      "Gleyce Souza Baptista, MSc.",
-        "contact_gleyce_role": "Engenharia Civil — Geotecnia, PUC-Rio",
+        "contact_gleyce":      "Gleyce de Souza Baptista, MSc.",
+        "contact_gleyce_role": "Engenheira Geotécnica",
         "contact_marina":      "Marina Bellaver Corte, DSc.",
         "contact_marina_role": "Professora, UFRGS",
         "lattes_gleyce":   "Lattes",
@@ -302,23 +362,30 @@ TEXTS = {
                      "tests (data not used in training)."),
         "src_cap":  "Database used for model training",
         "refs_exp": "Bibliographic References",
+        "diss_section_title":  "Master's Dissertation",
+        "diss_full_title": (
+            "Machine Learning for Predicting Sand Behavior in "
+            "Direct Shear and DSS Tests"
+        ),
+        "diss_institution": "Pontifical Catholic University of Rio de Janeiro",
+        "diss_advisor_label":   "Advisor",
+        "diss_defense_label":   "Defense",
+        "diss_committee_label": "Examining Committee",
+        "diss_access": "Maxwell Repository",
         "recog_title": "Awards & Publications",
         "recog_intro": ("GSandy and its associated dissertation have been recognized in the "
                         "following publications and scientific events:"),
         "tag_article": "ARTICLE",
-        "tag_thesis":  "DISSERTATION",
         "tag_award":   "AWARD",
         "tag_conf":    "CONFERENCE",
         "tag_reg":     "REGISTRATION",
         "recog_titles": {
             "tag_article": "Published article — Soils and Rocks",
-            "tag_thesis":  "Dissertation — Maxwell Repository, PUC-Rio",
             "tag_award":   "XIII CREA-RJ Award for Scientific and Technological Works 2025",
             "tag_conf":    "COBRAMSEG 2024 — Approved and presented paper",
             "tag_reg":     "Software registration record",
         },
         "link_article": "Access article",
-        "link_thesis":  "Access repository",
         "link_award":   "Abstract (p. 48)",
         "link_award2":  "Full paper PDF",
         "link_conf":    "Access paper",
@@ -330,11 +397,11 @@ TEXTS = {
                             "please cite the references below:"),
         "cite_sw_label":   "Software",
         "cite_diss_label": "Dissertation",
-        "cite_sw":   ("BAPTISTA, G. S. <em>GSandy</em>: software for predicting sand behavior "
-                      "in shear tests. Rio de Janeiro: PUC-Rio, 2024."),
-        "cite_diss": ("BAPTISTA, G. S. Machine Learning for Predicting Sand Behavior in Direct "
-                      "Shear and DSS Tests. 2024. Master's Dissertation — Pontifical Catholic "
-                      "University of Rio de Janeiro, Rio de Janeiro, 2024."),
+        "cite_sw":   ("BAPTISTA, G. de S. <em>GSandy</em>: software for predicting sand "
+                      "behavior in shear tests. Rio de Janeiro: PUC-Rio, 2024."),
+        "cite_diss": ("BAPTISTA, G. de S. Machine Learning for Predicting Sand Behavior in "
+                      "Direct Shear and DSS Tests. 2024. Master's Dissertation — Pontifical "
+                      "Catholic University of Rio de Janeiro, Rio de Janeiro, 2024."),
         "disclaimer_title": "Legal Notice",
         "disclaimer_body": (
             "GSandy is provided **for academic and research purposes only**. The predictive "
@@ -351,8 +418,8 @@ TEXTS = {
         "disclaimer_en_label": "",
         "disclaimer_en": "",
         "contact_label":       "Contact",
-        "contact_gleyce":      "Gleyce Souza Baptista, MSc.",
-        "contact_gleyce_role": "Civil Engineering — Geotechnics, PUC-Rio",
+        "contact_gleyce":      "Gleyce de Souza Baptista, MSc.",
+        "contact_gleyce_role": "Geotechnical Engineer",
         "contact_marina":      "Marina Bellaver Corte, DSc.",
         "contact_marina_role": "Professor, UFRGS",
         "lattes_gleyce":   "Lattes",
@@ -416,17 +483,23 @@ with col_title:
     st.markdown(f"<p class='gs-subtitle'>{t('subtitle')}</p>", unsafe_allow_html=True)
 
 with col_lang:
-    _lang_opts = ["🇧🇷 PT", "🇺🇸 EN"]
-    _lang_pick = st.radio(
-        "lang", _lang_opts,
-        horizontal=True,
-        label_visibility="collapsed",
-        index=0 if st.session_state.lang == "PT" else 1,
+    _br_cls = "gs-lang-btn active" if st.session_state.lang == "PT" else "gs-lang-btn"
+    _en_cls = "gs-lang-btn active" if st.session_state.lang == "EN" else "gs-lang-btn"
+    st.markdown(
+        f'<div class="gs-lang-toggle" style="margin-top:12px;">'
+        f'<a class="{_br_cls}" href="?lang=PT">{_SVG_BR}&nbsp;PT</a>'
+        f'<a class="{_en_cls}" href="?lang=EN">{_SVG_US}&nbsp;EN</a>'
+        f'</div>',
+        unsafe_allow_html=True,
     )
-    lang_pick = "PT" if _lang_opts.index(_lang_pick) == 0 else "EN"
-    if lang_pick != st.session_state.lang:
-        st.session_state.lang = lang_pick
-        safe_rerun()
+    # Sync language from URL query param (triggered by flag link clicks)
+    try:
+        _qp = st.query_params.get("lang", None)
+        if _qp in ("PT", "EN") and _qp != st.session_state.lang:
+            st.session_state.lang = _qp
+            safe_rerun()
+    except Exception:
+        pass
 
 st.divider()
 
@@ -452,7 +525,9 @@ try:
         st.session_state["_nav_idx"] = _nav_idx
     _use_tabs = False
 except ImportError:
-    pass  # package not installed — use tabs below
+    pass
+except Exception as _nb_err:
+    st.warning(f"Navbar: {type(_nb_err).__name__}: {_nb_err}", icon="⚠")
 
 if _use_tabs:
     tab_sim, tab_model, tab_pub = st.tabs([t("nav_sim"), t("nav_model"), t("nav_about")])
@@ -489,7 +564,6 @@ def _page_sim():
         min_sv, max_sv = 13, 1600
         init = [2.656, 0.552, 64, 150]
 
-    # Persist test type for Modelo tab (always, not just on simulation)
     st.session_state["_last_test_type"] = test_type
 
     col1, col2 = st.columns(2)
@@ -525,17 +599,27 @@ def _page_sim():
             fig = px.line(
                 df, x=x_full, y="τ/σ", color=model_col,
                 title=t("chart_title"),
-                color_discrete_sequence=["#E07B39", "#2E5EAA", "#3A9E6F"],
+                color_discrete_sequence=["#1E4B9C", "#6BAED6", "#C44040"],
             )
-            fig.update_traces(line=dict(width=2.5))
+            fig.update_traces(line=dict(width=2, dash="dash"))
             fig.update_layout(
                 plot_bgcolor="white", paper_bgcolor="white",
                 font=dict(family="Segoe UI, Arial, sans-serif", size=13),
                 title=dict(font=dict(size=14, color="#222")),
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-                xaxis=dict(showgrid=True, gridcolor="#F2F2F2", zeroline=False),
-                yaxis=dict(showgrid=True, gridcolor="#F2F2F2", zeroline=False),
-                margin=dict(t=60, b=40, l=40, r=20),
+                legend=dict(
+                    title=dict(text=t("model_col"),
+                               font=dict(size=11, color="#999")),
+                    orientation="v",
+                    yanchor="top", y=1,
+                    xanchor="left", x=1.02,
+                    borderwidth=0,
+                    bgcolor="rgba(0,0,0,0)",
+                ),
+                xaxis=dict(showgrid=True, gridcolor="#F2F2F2",
+                           zeroline=False, title_font=dict(size=12)),
+                yaxis=dict(showgrid=True, gridcolor="#F2F2F2",
+                           zeroline=False, title_font=dict(size=12)),
+                margin=dict(t=50, b=40, l=50, r=120),
             )
             st.session_state["_sim_df"]  = df
             st.session_state["_sim_fig"] = fig
@@ -648,7 +732,35 @@ Direto e DSS. TCC — UFPR, Curitiba, 2018.
 
 
 def _page_pub():
-    # ── Recognition ──────────────────────────────────────────────────────────
+    # ── Dissertation ──────────────────────────────────────────────────────────
+    section_label(t("diss_section_title"))
+    _author_pt = "Gleyce de Souza Baptista"
+    st.markdown(
+        f'<div class="gs-diss-card">'
+        f'<div class="gs-diss-title">{t("diss_full_title")}</div>'
+        f'<div class="gs-diss-meta">'
+        f'{_author_pt} &mdash; {t("diss_institution")}, {DISS_DEFENSE_DATE}'
+        f'</div>'
+        f'<div class="gs-diss-meta">'
+        f'<b>{t("diss_advisor_label")}:</b> {DISS_ADVISOR}'
+        f'</div>'
+        f'<div class="gs-diss-links">'
+        f'<a class="gs-recog-link" href="{DISS_MAXWELL_URL}" target="_blank">'
+        f'{t("diss_access")} ↗</a>'
+        f'<a class="gs-recog-link" href="{DISSERTATION_DOI}" target="_blank">'
+        f'DOI ↗</a>'
+        f'</div>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+    if DISS_COMMITTEE:
+        with st.expander(t("diss_committee_label")):
+            for member in DISS_COMMITTEE:
+                st.markdown(f"- {member}")
+
+    st.divider()
+
+    # ── Awards & Publications ─────────────────────────────────────────────────
     section_label(t("recog_title"))
     st.caption(t("recog_intro"))
     recog_titles = t("recog_titles")
@@ -674,6 +786,12 @@ def _page_pub():
 
     st.divider()
 
+    # ── About ─────────────────────────────────────────────────────────────────
+    section_label(t("about_title"))
+    st.markdown(t("about_body"))
+
+    st.divider()
+
     # ── Disclaimer ────────────────────────────────────────────────────────────
     with st.expander(t("disclaimer_title"), expanded=False):
         st.markdown(t("disclaimer_body"))
@@ -693,11 +811,6 @@ else:
 
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
-LATTES_GLEYCE   = "#"   # substituir pelo link do Lattes
-LATTES_MARINA   = "#"
-LINKEDIN_GLEYCE = "#"   # substituir pelo link do LinkedIn
-LINKEDIN_MARINA = "#"
-
 st.markdown(f"""
 <div style="text-align:center;padding:1.5rem 0 0.8rem;
             border-top:1px solid #F0F0F0;margin-top:1.5rem;line-height:1.95;">
@@ -721,11 +834,9 @@ st.markdown(f"""
   <a href="{LINKEDIN_MARINA}" target="_blank" style="color:#666;text-decoration:none;font-size:0.8rem;">{t("linkedin_marina")}</a>
   <br><br>
   <span style="color:#CCC;font-size:0.73rem;">
-    Pontifícia Universidade Católica do Rio de Janeiro
+    Pontifícia Universidade Católica do Rio de Janeiro, 2024
     &nbsp;&middot;&nbsp;
-    Universidade Federal do Rio Grande do Sul
-    &nbsp;&middot;&nbsp;
-    Geotecnia, 2024
+    Universidade Federal do Rio Grande do Sul, 2026
   </span>
 </div>
 """, unsafe_allow_html=True)
